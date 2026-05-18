@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor Profile – Rent Locally</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body onload="initProfile()">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="header-logo" href="index.html">
+      <span class="logo-icon">🏠</span>
+      <span class="logo-text">Rent Locally <span class="logo-vendor">Vendor</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="profile.html" class="active">Profile</a>
+      <a href="categories.html">Categories</a>
+      <a href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+    <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Menu">&#9776;</button>
+  </div>
+</header>
+
+<div class="page-wrap">
+<div class="container">
+  <div class="profile-header">
+    <h1 id="userGreeting">Welcome, Vendor!</h1>
+  </div>
+
+  <!-- Step Indicator -->
+  <div class="step-indicator">
+    <div class="step-item active" id="stepIndicator1" onclick="tryGoToStep(1)">
+      <div class="step-circle">1</div>
+      <div class="step-label">Personal Details</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="stepIndicator2" onclick="tryGoToStep(2)">
+      <div class="step-circle">2</div>
+      <div class="step-label">Account Details</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="stepIndicator3" onclick="tryGoToStep(3)">
+      <div class="step-circle">3</div>
+      <div class="step-label">Document Upload</div>
+    </div>
+  </div>
+
+  <div class="tab-content">
+
+    <!-- STEP 1: PERSONAL DETAILS -->
+    <div id="step1" class="tab-pane active">
+      <h3>&#128100; Personal &amp; Address Details</h3>
+
+      <div class="section-block">
+        <h4 class="section-sub-heading">Personal Information</h4>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>First Name <span class="required-star">*</span></label>
+            <input type="text" id="firstName" placeholder="First Name">
+          </div>
+          <div class="form-group">
+            <label>Last Name <span class="required-star">*</span></label>
+            <input type="text" id="lastName" placeholder="Last Name">
+          </div>
+          <div class="form-group">
+            <label>Phone Number <span class="required-star">*</span></label>
+            <input type="tel" id="phone" placeholder="10-digit phone number" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+          </div>
+          <div class="form-group">
+            <label>Alternative Phone</label>
+            <input type="tel" id="altPhone" placeholder="Alternative Phone" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+          </div>
+          <div class="form-group">
+            <label>Email ID <span class="required-star">*</span></label>
+            <input type="email" id="email" placeholder="Email ID">
+          </div>
+          <div class="form-group">
+            <label>Date of Birth <span class="required-star">*</span></label>
+            <input type="date" id="dob">
+          </div>
+          <div class="form-group">
+            <label>Gender <span class="required-star">*</span></label>
+            <div class="select-wrapper">
+              <select id="gender">
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <span class="select-arrow">&#9660;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="section-block">
+        <h4 class="section-sub-heading">&#127968; Address Information</h4>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>House / Flat No <span class="required-star">*</span></label>
+            <input type="text" id="house" placeholder="House/Flat No">
+          </div>
+          <div class="form-group">
+            <label>Street / Area <span class="required-star">*</span></label>
+            <input type="text" id="street" placeholder="Street/Area">
+          </div>
+          <div class="form-group">
+            <label>Landmark</label>
+            <input type="text" id="landmark" placeholder="Landmark">
+          </div>
+          <div class="form-group">
+            <label>City <span class="required-star">*</span></label>
+            <input type="text" id="city" placeholder="City">
+          </div>
+          <div class="form-group">
+            <label>District <span class="required-star">*</span></label>
+            <input type="text" id="district" placeholder="District">
+          </div>
+          <div class="form-group">
+            <label>State <span class="required-star">*</span></label>
+            <input type="text" id="state" placeholder="State">
+          </div>
+          <div class="form-group">
+            <label>Country <span class="required-star">*</span></label>
+            <input type="text" id="country" placeholder="Country">
+          </div>
+          <div class="form-group">
+            <label>Zip / Pin Code <span class="required-star">*</span></label>
+            <input type="text" id="postal" placeholder="Zip / Pin code">
+          </div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="main-btn primary-submit" onclick="goToStep(2)">Next: Account Details &#8594;</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: ACCOUNT DETAILS -->
+    <div id="step2" class="tab-pane">
+      <h3>&#127970; Account &amp; Banking Details</h3>
+
+      <div class="section-block">
+        <h4 class="section-sub-heading">Banking Information</h4>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Beneficiary Name <span class="required-star">*</span></label>
+            <input type="text" id="Beneficiaryname" placeholder="Enter Beneficiary Name">
+          </div>
+          <div class="form-group full-width">
+            <label>Bank Name <span class="required-star">*</span></label>
+            <input type="text" id="BankName" placeholder="Enter Bank Name">
+          </div>
+          <div class="form-group">
+            <label>Account Number <span class="required-star">*</span></label>
+            <input type="text" id="AccountNumber" placeholder="Account Number">
+          </div>
+          <div class="form-group">
+            <label>IFSC Code <span class="required-star">*</span></label>
+            <input type="text" id="ifsc" placeholder="IFSC Code">
+          </div>
+          <div class="form-group full-width">
+            <label>GST Number <span style="font-weight:400; color:#888;">(Optional)</span></label>
+            <input type="text" id="gstNumber" placeholder="Enter GST Number">
+          </div>
+          <div class="form-group full-width">
+            <label>Account Type <span class="required-star">*</span></label>
+            <div class="select-wrapper">
+              <select id="accountType">
+                <option value="">Select Account Type</option>
+                <option value="savings">Savings</option>
+                <option value="current">Current</option>
+              </select>
+              <span class="select-arrow">&#9660;</span>
+            </div>
+          </div>
+          <div class="form-group full-width">
+            <label>Branch Address <span class="required-star">*</span></label>
+            <textarea id="branchAddress" rows="3" placeholder="Branch Address"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <h4 class="section-sub-heading">Passbook Upload</h4>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Passbook <span class="required-star">*</span></label>
+            <div class="file-upload-area" onclick="document.getElementById('passbook').click()">
+              <input type="file" id="passbook" accept="image/*" onchange="handleFileUpload('passbook')" style="display:none;">
+              <div class="file-upload-icon">&#128196;</div>
+              <div class="file-upload-text">Click to upload your Passbook</div>
+              <div class="file-upload-hint">Supports: JPG, PNG, PDF (Max 5MB)</div>
+              <div class="file-upload-name" id="passbookFileName"></div>
+            </div>
+            <img id="passbookPreview" class="file-preview" alt="Passbook Preview" style="display:none;">
+          </div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="main-btn" onclick="goToStep(1)" style="background:linear-gradient(135deg,#6c757d,#495057);">&#8592; Back</button>
+        <button class="main-btn primary-submit" onclick="goToStep(3)">Next: Document Upload &#8594;</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: DOCUMENT UPLOAD -->
+    <div id="step3" class="tab-pane">
+      <h3>&#128196; Document Upload</h3>
+
+      <div class="section-block">
+        <h4 class="section-sub-heading">Identity Documents</h4>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Aadhar Card <span class="required-star">*</span></label>
+            <div class="file-upload-area" onclick="document.getElementById('aadhar').click()">
+              <input type="file" id="aadhar" accept="image/*" onchange="handleFileUpload('aadhar')" style="display:none;">
+              <div class="file-upload-icon">&#128196;</div>
+              <div class="file-upload-text">Click to upload Vendor Aadhar Card</div>
+              <div class="file-upload-hint">Supports: JPG, PNG, PDF (Max 5MB)</div>
+              <div class="file-upload-name" id="aadharFileName"></div>
+            </div>
+            <img id="aadharPreview" class="file-preview" alt="Aadhar Preview" style="display:none;">
+          </div>
+          <div class="form-group full-width">
+            <label>PAN Card <span class="required-star">*</span></label>
+            <div class="file-upload-area" onclick="document.getElementById('pan').click()">
+              <input type="file" id="pan" accept="image/*" onchange="handleFileUpload('pan')" style="display:none;">
+              <div class="file-upload-icon">&#128196;</div>
+              <div class="file-upload-text">Click to upload Vendor PAN Card</div>
+              <div class="file-upload-hint">Supports: JPG, PNG, PDF (Max 5MB)</div>
+              <div class="file-upload-name" id="panFileName"></div>
+            </div>
+            <img id="panPreview" class="file-preview" alt="PAN Preview" style="display:none;">
+          </div>
+          <div class="form-group full-width">
+            <label>Photo <span class="required-star">*</span></label>
+            <div class="file-upload-area" onclick="document.getElementById('photo').click()">
+              <input type="file" id="photo" accept="image/*" onchange="handleFileUpload('photo')" style="display:none;">
+              <div class="file-upload-icon">&#128247;</div>
+              <div class="file-upload-text">Click to upload Vendor Photo</div>
+              <div class="file-upload-hint">Supports: JPG, PNG (Max 5MB)</div>
+              <div class="file-upload-name" id="photoFileName"></div>
+            </div>
+            <img id="photoPreview" class="file-preview" alt="Photo Preview" style="display:none;">
+          </div>
+          <div class="form-group full-width">
+            <label>Signature <span class="required-star">*</span></label>
+            <div class="file-upload-area" onclick="document.getElementById('signature').click()">
+              <input type="file" id="signature" accept="image/*" onchange="handleFileUpload('signature')" style="display:none;">
+              <div class="file-upload-icon">&#9999;</div>
+              <div class="file-upload-text">Click to upload Vendor Signature</div>
+              <div class="file-upload-hint">Supports: JPG, PNG (Max 5MB)</div>
+              <div class="file-upload-name" id="signatureFileName"></div>
+            </div>
+            <img id="signaturePreview" class="file-preview" alt="Signature Preview" style="display:none;">
+          </div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="main-btn" onclick="goToStep(2)" style="background:linear-gradient(135deg,#6c757d,#495057);">&#8592; Back</button>
+        <button class="main-btn primary-submit" onclick="saveProfileData()">Submit Profile &amp; Continue &#8594;</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">&copy; 2024 Rent Locally. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Help &amp; Support</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleMobileNav() {
+    document.querySelector('.header-nav').classList.toggle('nav-open');
+  }
+</script>
+<script src="script.js"></script>
+</body>
+</html>
