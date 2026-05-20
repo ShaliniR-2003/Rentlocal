@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Settings</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background:#f4f7fb;
+font-family:Arial;
+margin:0;
+}
+
+/* Sidebar */
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:240px;
+height:100vh;
+background:linear-gradient(180deg,#0d3b66,#1d5bbf);
+color:white;
+padding:20px;
+}
+
+.sidebar h3{
+margin-bottom:30px;
+font-weight:bold;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+padding:12px;
+border-radius:8px;
+margin-bottom:8px;
+transition:0.3s;
+}
+
+.sidebar a:hover{
+background:rgba(255,255,255,0.2);
+}
+
+/* Main Content */
+.main-content{
+margin-left:240px;
+padding:40px;
+}
+
+/* Settings Card */
+.settings-card{
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0px 6px 20px rgba(0,0,0,0.2);
+margin-top:60px;
+}
+
+h2{
+color:#0d3b66;
+font-weight:bold;
+}
+
+.save-btn{
+background:#0d3b66;
+color:white;
+font-weight:bold;
+}
+
+.save-btn:hover{
+background:#1d5bbf;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+
+<h3>RentIT Admin</h3>
+
+<a href="dashboard.html">Dashboard</a>
+<a href="products.html">Products</a>
+<a href="vendors.html">Vendors</a>
+<a href="bookings.php">Bookings</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="reports.html">Reports</a>
+<a href="settings.html">Settings</a>
+
+<a href="login.html" class="btn btn-danger mt-4 w-100">Logout</a>
+
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+<div class="container mt-5">
+
+<h2 class="text-center mb-4">Admin Settings</h2>
+
+<div class="row justify-content-center">
+
+<div class="col-md-8">
+
+<div class="settings-card">
+
+<form id="settingsForm">
+
+<!-- Admin Profile -->
+
+<h5 class="mb-3">Profile Settings</h5>
+
+<div class="mb-3">
+<label class="form-label">Admin Name</label>
+<input type="text" class="form-control" placeholder="Enter name" id="adminName">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Email Address</label>
+<input type="email" class="form-control" placeholder="Enter email" id="adminEmail">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Phone Number</label>
+<input type="text" class="form-control" placeholder="Enter phone" id="adminPhone">
+</div>
+
+<hr>
+
+<!-- Password -->
+
+<h5 class="mb-3">Change Password</h5>
+
+<div class="mb-3">
+<label class="form-label">Current Password</label>
+<input type="password" class="form-control" id="currentPassword">
+</div>
+
+<div class="mb-3">
+<label class="form-label">New Password</label>
+<input type="password" class="form-control" id="newPassword">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Confirm Password</label>
+<input type="password" class="form-control" id="confirmPassword">
+</div>
+
+<hr>
+
+<!-- Notifications -->
+
+<h5 class="mb-3">Notifications</h5>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox" id="emailNotif">
+<label class="form-check-label">
+Email Notifications
+</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox" id="smsNotif">
+<label class="form-check-label">
+SMS Notifications
+</label>
+</div>
+
+<hr>
+
+<!-- Theme -->
+
+<h5 class="mb-3">Theme</h5>
+
+<select class="form-select" id="themeSelect">
+<option value="Light Mode">Light Mode</option>
+<option value="Dark Mode">Dark Mode</option>
+</select>
+
+<br>
+
+<button type="submit" class="btn save-btn w-100">Save Settings</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Load settings from database
+fetch('backend/get_settings.php')
+.then(r => r.json())
+.then(data => {
+    if(data.length > 0) {
+        const s = data[0];
+        document.getElementById('adminName').value = s.admin_name || '';
+        document.getElementById('adminEmail').value = s.email || '';
+        document.getElementById('adminPhone').value = s.phone || '';
+        document.getElementById('emailNotif').checked = (s.email_notifications === 'enabled');
+        document.getElementById('smsNotif').checked = (s.sms_notifications === 'enabled');
+        document.getElementById('themeSelect').value = s.theme || 'Light Mode';
+    }
+})
+.catch(error => console.error(error));
+
+// Save Settings to Database
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('adminName').value;
+    const email = document.getElementById('adminEmail').value;
+    const phone = document.getElementById('adminPhone').value;
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const emailNotif = document.getElementById('emailNotif').checked ? 'enabled' : 'disabled';
+    const smsNotif = document.getElementById('smsNotif').checked ? 'enabled' : 'disabled';
+    const theme = document.getElementById('themeSelect').value;
+    
+    if(newPassword && newPassword !== confirmPassword) {
+        alert('Error: New password and confirm password do not match!');
+        return;
+    }
+    
+    // Save to database
+    fetch('backend/save_settings.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'admin_name='+encodeURIComponent(name)+'&email='+encodeURIComponent(email)+'&phone='+encodeURIComponent(phone)+'&email_notifications='+encodeURIComponent(emailNotif)+'&sms_notifications='+encodeURIComponent(smsNotif)+'&theme='+encodeURIComponent(theme)
+    })
+    .then(r => r.text())
+    .then(data => {
+        if(data.trim() === 'success') {
+            alert('Settings saved successfully!');
+        } else {
+            alert('Error: ' + data);
+        }
+    });
+});
+
+document.querySelectorAll('.sidebar a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        document.querySelectorAll('.sidebar a').forEach(l => l.style.background = 'transparent');
+        this.style.background = 'rgba(255,255,255,0.2)';
+    });
+});
+</script>
+
+</body>
+</html>
+

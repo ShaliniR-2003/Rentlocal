@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Enquiries - RentIT Admin</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI';
+background:#f4f7fb;
+}
+
+/* Sidebar */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:240px;
+height:100vh;
+background:linear-gradient(180deg,#0d3b66,#1d5bbf);
+color:white;
+padding:20px;
+}
+
+.sidebar h3{
+margin-bottom:30px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+padding:12px;
+border-radius:8px;
+margin-bottom:8px;
+}
+
+.sidebar a:hover{
+background:rgba(255,255,255,0.2);
+}
+
+/* Main */
+
+.main{
+margin-left:240px;
+padding:20px;
+}
+
+/* Topbar */
+
+.topbar{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+/* Enquiry Card */
+
+.enquiry-card{
+border:none;
+border-radius:12px;
+box-shadow:0 3px 12px rgba(0,0,0,0.1);
+padding:20px;
+transition:0.3s;
+}
+
+.enquiry-card:hover{
+transform:translateY(-4px);
+}
+
+.message{
+color:#555;
+font-size:14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h3>RentIT Admin</h3>
+
+<a href="dashboard.html">Dashboard</a>
+<a href="products.html">Products</a>
+<a href="vendors.html">Vendors</a>
+<a href="bookings.php">Bookings</a>
+<a href="enquiries.html">Enquiries</a>
+<a href="reports.html">Reports</a>
+<a href="settings.html">Settings</a>
+
+<a href="login.html" class="btn btn-danger mt-4 w-100">Logout</a>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<div class="topbar d-flex justify-content-between align-items-center">
+
+<h4>Customer Enquiries</h4>
+
+<input type="text" class="form-control w-25" placeholder="Search enquiries..." id="searchInput">
+
+</div>
+
+<!-- Enquiry Cards -->
+
+<div class="row g-4" id="enquiryRow">
+
+<div class="col-md-6">
+
+<div class="card enquiry-card">
+
+<h6>Loading...</h6>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Default enquiries
+const defaultEnquiries = [
+    {name: 'Rahul Sharma', email: 'rahul@gmail.com', message: 'Hi, I want to rent a DSLR camera for 3 days. Can you tell me the availability?', status: 'Pending'},
+    {name: 'Priya Nair', email: 'priya@gmail.com', message: 'Is the laptop available for weekly rental? Please share price details.', status: 'Resolved'},
+    {name: 'Arjun Reddy', email: 'arjun@gmail.com', message: 'I want to rent a sports bike this weekend. What documents are required?', status: 'Pending'},
+    {name: 'Anita Patel', email: 'anita@gmail.com', message: 'Do you provide delivery service for rented equipment?', status: 'Resolved'}
+];
+
+// Load enquiries from database
+fetch('backend/get_enquiries.php')
+.then(r => r.json())
+.then(data => {
+    let row = document.getElementById("enquiryRow");
+    row.innerHTML = "";
+    
+    const enquiries = (data && data.length > 0) ? data : defaultEnquiries;
+    
+    enquiries.forEach(e => {
+        let badgeClass = 'bg-warning';
+        if(e.status === 'Resolved') badgeClass = 'bg-success';
+        if(e.status === 'New') badgeClass = 'bg-danger';
+        row.innerHTML += `
+        <div class="col-md-6">
+            <div class="card enquiry-card">
+                <h6>${e.name}</h6>
+                <p class="text-muted">${e.email}</p>
+                <p class="message">${e.message}</p>
+                <div class="d-flex justify-content-between">
+                    <span class="badge ${badgeClass}">${e.status}</span>
+                    <button class="btn btn-sm btn-primary" onclick="replyEnquiry('${e.name}', '${e.email}', ${e.id || 0})">Reply</button>
+                </div>
+            </div>
+        </div>`;
+    });
+})
+.catch(error => {
+    let row = document.getElementById("enquiryRow");
+    row.innerHTML = "";
+    defaultEnquiries.forEach(e => {
+        let badgeClass = 'bg-warning';
+        if(e.status === 'Resolved') badgeClass = 'bg-success';
+        row.innerHTML += `
+        <div class="col-md-6">
+            <div class="card enquiry-card">
+                <h6>${e.name}</h6>
+                <p class="text-muted">${e.email}</p>
+                <p class="message">${e.message}</p>
+                <div class="d-flex justify-content-between">
+                    <span class="badge ${badgeClass}">${e.status}</span>
+                    <button class="btn btn-sm btn-primary" onclick="replyEnquiry('${e.name}', '${e.email}', 0)">Reply</button>
+                </div>
+            </div>
+        </div>`;
+    });
+});
+
+// Reply Enquiry Function - Save to Database
+function replyEnquiry(name, email, id) {
+    const reply = prompt('Enter your reply to ' + name + ' (' + email + '):');
+    if (reply) {
+        if(id > 0) {
+            // Save reply to database
+            fetch('backend/reply_enquiry.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'id='+encodeURIComponent(id)+'&reply='+encodeURIComponent(reply)
+            })
+            .then(r => r.text())
+            .then(data => {
+                if(data.trim() === 'success') {
+                    alert('Reply sent to ' + email + '!\n\nMessage: ' + reply);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data);
+                }
+            });
+        } else {
+            alert('Reply sent to ' + email + '!\n\nMessage: ' + reply);
+        }
+    }
+}
+
+// Search functionality
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const cards = document.querySelectorAll('.enquiry-card');
+    cards.forEach(card => {
+        const name = card.querySelector('h6').textContent.toLowerCase();
+        const message = card.querySelector('.message') ? card.querySelector('.message').textContent.toLowerCase() : '';
+        card.parentElement.parentElement.style.display = (name.includes(searchTerm) || message.includes(searchTerm)) ? 'block' : 'none';
+    });
+});
+</script>
+
+</body>
+</html>
+
